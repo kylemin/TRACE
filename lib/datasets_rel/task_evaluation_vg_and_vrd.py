@@ -85,7 +85,7 @@ def eval_rel_results(all_results, output_dir, topk=100, do_val=True):
     if cfg.TEST.DATASETS[0].find('ag') >= 0:
         #prd_k_set = (2, 3, 4, 10, 26, )
         ###prd_k_set = (7, 6)
-        prd_k_set = (6, 7)
+        prd_k_set = (1, 7)
     elif cfg.TEST.DATASETS[0].find('vidvrd') >= 0:
         #prd_k_set = []
         #for i in range(132, 9, -10):

@@ -1,6 +1,6 @@
 # Target Adaptive Context Aggregation for Video Scene Graph Generation
 
-This is a PyTorch implementation for [Target Adaptive Context Aggregation for Video Scene Graph Generation](https://arxiv.org/abs/2108.08121). 
+This is a PyTorch implementation for [Target Adaptive Context Aggregation for Video Scene Graph Generation](https://arxiv.org/abs/2108.08121).
 
 ## Requirements
 - PyTorch >= 1.2 (Mine 1.7.1 (CUDA 10.1))
@@ -37,7 +37,7 @@ sh make.sh
 
 ### Download Datasets
 
-Download links: [VidVRD](https://xdshang.github.io/docs/imagenet-vidvrd.html) and [AG](https://www.actiongenome.org/#download). 
+Download links: [VidVRD](https://xdshang.github.io/docs/imagenet-vidvrd.html) and [AG](https://www.actiongenome.org/#download).
 
 Create directories for datasets. The directories for `./data/` should look like:
 
@@ -105,21 +105,6 @@ The final directories for VidVRD dataset should look like:
 |   |   |-- ...
 ```
 
-### Change the format of annotations for AG and VidVRD
-
-```
-# ROOT=path/to/cloned/repository
-cd $ROOT
-
-python tools/rename_ag.py
-
-python tools/rename_vidvrd_anno.py
-
-python tools/get_vidvrd_pretrained_rois.py --out_rpath pre_processed_boxes_gt_dense_more --rpath traj_cls_gt
-
-python tools/get_vidvrd_pretrained_rois.py --out_rpath pre_processed_boxes_dense_more
-```
-
 ### Dump  frames
 
 Our ffmpeg version is 4.2.2-0york0~16.04 so using `--ignore_editlist` to avoid some frames being ignored. The jpg format saves the drive space.
@@ -140,7 +125,7 @@ python tools/dump_frames.py --frame_dir data/ag/sampled_frames --ignore_editlist
 python tools/dump_frames.py --ignore_editlist --video_dir data/vidvrd/videos --frame_dir data/vidvrd/sampled_frames --frame_list_file val_fname_list.json,train_fname_list.json --annotation_dir data/vidvrd/annotations --frames_store_type jpg --high_quality --sampled_frames --st_id 0
 ```
 
-If you want to dump all frames with jpg format. 
+If you want to dump all frames with jpg format.
 
 ```
 python tools/dump_frames.py --all_frames --frame_dir data/ag/all_frames --ignore_editlist --frames_store_type jpg
@@ -148,7 +133,7 @@ python tools/dump_frames.py --all_frames --frame_dir data/ag/all_frames --ignore
 
 ### Get classes in json format for AG
 
-``` 
+```
 # ROOT=path/to/cloned/repository
 cd $ROOT
 python txt2json.py
@@ -164,7 +149,20 @@ cd $ROOT
 python tools/dataset_split.py
 ```
 
+### Change the format of annotations for AG and VidVRD
 
+```
+# ROOT=path/to/cloned/repository
+cd $ROOT
+
+python tools/rename_ag.py
+
+python tools/rename_vidvrd_anno.py
+
+python tools/get_vidvrd_pretrained_rois.py --out_rpath pre_processed_boxes_gt_dense_more --rpath traj_cls_gt
+
+python tools/get_vidvrd_pretrained_rois.py --out_rpath pre_processed_boxes_dense_more
+```
 
 ## Pretrained Models
 
@@ -172,7 +170,7 @@ Download model weights from [here](https://drive.google.com/drive/folders/1eaJPa
 
 - pretrained object detection
 - TRACE trained on VidVRD in  `detection_models/vidvrd/trained_rel`
-- TRACE trained on AG in `detection_models/ag/trained_rel` 
+- TRACE trained on AG in `detection_models/ag/trained_rel`
 
 ## Performance
 
@@ -246,7 +244,11 @@ python tools/test_vidvrd.py --prediction Outputs/vidvrd_new101_det2/baseline_rel
 evaluation for detected boxes, Recalls  (SGDet)
 
 ```bash
-CUDA_VISIBLE_DEVICES=4 python tools/test_net_rel.py --dataset ag --cfg configs/ag/res101xi3d50_dc5_2d.yaml --load_ckpt Outputs/res101xi3d50_dc5_2d/Nov01-21-50-49_gpuserver-11_step_with_prd_cls_v3/ckpt/model_step177329.pth --output_dir Outputs/ag_val_101_ag_dc5_jin_map_new_infer_multiatten --do_val
+python tools/test_net_rel.py --dataset ag --cfg configs/ag/res101xi3d50_dc5_2d.yaml --load_ckpt detection_models/ag/trained_rel/model_step177329.pth --output_dir output/ag_val_101_ag_dc5_jin_map_new_infer_multiatten --do_val
+
+or
+
+python tools/test_net_rel.py --dataset ag --cfg configs/ag/res101xi3d50_dc5_2d.yaml --load_ckpt detection_models/ag/trained_rel/model_step177329.pth --output_dir output/ag_val_101_ag_dc5_jin_map_new_infer_multiatten_8gpus --do_val --multi-gpu-testing
 
 #evaluation for detected boxes, mRecalls
 python tools/visualize.py  --output_dir Outputs/ag_val_101_ag_dc5_jin_map_new_infer_multiatten --num 60000 --no_do_vis --rel_class_recall
