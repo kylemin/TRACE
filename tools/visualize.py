@@ -172,7 +172,8 @@ if __name__ == '__main__':
     rel_class_recalls = [{10:0, 20: 0, 50: 0, 100: 0} for i in range(len(rel_list))]
     tot_recalls = [{10:0, 20: 0, 50: 0, 100: 0} for i in range(len(rel_list))]
     rel_class_gt_num = [0 for i in range(len(rel_list))]
-    recalls = [10, 20, 50, 100]
+    #recalls = [10, 20, 50, 100]
+    recalls = [10]
     print('total {} images. '.format(len(res)))
     args.num = min(args.num, len(res))
     print('Number is {}. '.format(args.num))
@@ -380,26 +381,34 @@ if __name__ == '__main__':
                 tot_recalls[r][k] = float(tot_recalls[r][k]) / (float(video_len) + 1e-12)
         
         print('=========== ' + 'Image_ver_rel_recalls' + ' ===========')
+        per_class_recall = {}
         mr_list = []
         for k in recalls:
             print('=========== {} ==========='.format(k))
             mrr = float(0.)
             for i, gt_rel_num in enumerate(rel_class_gt_num):
                 rel_class_recalls[i][k] = float(rel_class_recalls[i][k]) / (float(gt_rel_num) + 1e-12)
-                print('%s: %.2f' % (rel_list[i], 100 * rel_class_recalls[i][k]))
+                #print('%s: %.2f' % (rel_list[i], 100 * rel_class_recalls[i][k]))
+                per_class_recall[rel_list[i]] = rel_class_recalls[i][k]
                 mrr += rel_class_recalls[i][k]
             mr_list.append((k, 100*mrr/len(rel_class_gt_num)))
+
+        print (per_class_recall)
         for i in mr_list:    
             print('mR@{}: {}'.format(i[0], i[1]))
         
         print('=========== ' + 'Video_ver_rel_recalls' + ' ===========')
+        per_class_recall = {}
         mr_v_list = []
         for k in recalls:
             mrr = float(0.)
             for i, gt_rel_num in enumerate(rel_class_gt_num):
                 #print('%s: %.2f' % (rel_list[i], 100 * tot_recalls[i][k]))
+                per_class_recall[rel_list[i]] = tot_recalls[i][k]
                 mrr += tot_recalls[i][k]
             mr_v_list.append((k, 100*mrr/len(rel_class_gt_num)))
+
+        print (per_class_recall)
         for i in mr_v_list:    
             print('mR@{}: {}'.format(i[0], i[1]))
             
